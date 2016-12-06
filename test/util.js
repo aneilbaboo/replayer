@@ -320,7 +320,7 @@ describe('utils.js', function() {
     const touchOnHit = replayerUtil.internal.touchOnHit;
 
     beforeEach(function() {
-      sinon.stub(Date, 'now').returns('now');
+      sinon.stub(Date, 'now').returns(10000);
       sinon.stub(fs, 'utimesSync'); // utimesSync becomes a noop
     });
 
@@ -335,7 +335,7 @@ describe('utils.js', function() {
       fs.existsSync.withArgs('my-filename.headers').returns(true);
 
       touchOnHit('my-filename');
-      fs.utimesSync.calledWithExactly('my-filename.headers', 'now', 'now')
+      fs.utimesSync.calledWithExactly('my-filename.headers', 10, 10)
         .should.equal(true);
     });
 
