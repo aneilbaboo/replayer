@@ -20,7 +20,7 @@
  * VCR_MODE=playback node examples/fixtureDir
  *
  * Demonstrates setting a different directory for the fixtures to be placed
- * into, as opposed to using the default directory set by sepia.
+ * into, as opposed to using the default directory set by replayer.
  */
 
 var http = require('http');
@@ -34,7 +34,7 @@ var common = require('./common');
 
 common.ensureNonCacheMode('fixtureDir.js');
 
-var sepia = require('..');
+var replayer = require('..');
 
 // -- TEST SERVER --------------------------------------------------------------
 
@@ -54,7 +54,7 @@ var httpServer = http.createServer(function(req, res) {
 function makeHttpRequest(next) {
   var start = Date.now();
 
-  sepia.fixtureDir(path.join(process.cwd(), 'fixtures/custom'));
+  replayer.fixtureDir(path.join(process.cwd(), 'fixtures/custom'));
 
   request({
     url: 'http://localhost:1337',

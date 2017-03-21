@@ -22,7 +22,7 @@
  * Exercises the language-specific fixture directory functionality. This is a
  * feature that is useful when the server dynamically returns different data
  * based on the client's Accept-Language header. This functionality is built in
- * to sepia because it is a common use case.
+ * to replayer because it is a common use case.
  */
 
 var http = require('http');

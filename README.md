@@ -1,44 +1,47 @@
-# sepia - the way things used to be
+# replayer - replay HTTP requests
 
-Sepia is a VCR-like module for node.js that records HTTP interactions, then
-plays them back exactly like the first time they were invoked. Sepia was
+This project was forked from https://github.com/linkedin/sepia, because it is
+no longer being maintained.
+
+Replayer is a VCR-like module for node.js that records HTTP interactions, then
+plays them back exactly like the first time they were invoked. Replayer was
 created to isolate a server from its remote downstream dependencies, for speed
 and fault-tolerence.
 
-Sepia should work with any HTTP library in node.js that uses `http#request` and
+Replayer should work with any HTTP library in node.js that uses `http#request` and
 `https#request`. In practice, it has been extensively tested against [the
 `request` module](https://github.com/mikeal/request), and there is a test to
 ensure it works with [the `then-request`
 module](https://github.com/then/then-request).
 
-Sepia was developed and is in use at LinkedIn since early 2013. There, it is
+Replayer was developed and is in use at LinkedIn since early 2013. There, it is
 used to improve the speed and reliability of the integration test suite for the
 node.js server powering the mobile applications.
 
-https://github.com/linkedin/sepia  
-https://npmjs.org/package/sepia
+https://github.com/aneilbaboo/replayer  
+https://npmjs.org/package/replayer
 
 ## Quick Start
 
 Install the module.
 
-    npm install sepia
+    npm install replayer
 
 Plop it into your application:
 
-    require('sepia');
+    require('replayer');
 
 Now, when you start your application, run it with the `VCR_MODE` environment
 variable set to the correct value:
 
-    npm start                   # no sepia
-    VCR_MODE=record npm start   # sepia, in record mode
-    VCR_MODE=playback npm start # sepia, in playback mode
-    VCR_MODE=cache npm start    # sepia, in cache mode
+    npm start                   # no replayer
+    VCR_MODE=record npm start   # replayer, in record mode
+    VCR_MODE=playback npm start # replayer, in playback mode
+    VCR_MODE=cache npm start    # replayer, in cache mode
 
 ## Running the examples
 
-    cd sepia # wherever you installed the module
+    cd replayer # wherever you installed the module
     npm install
     time VCR_MODE=record   node examples/http
     time VCR_MODE=playback node examples/http # notice it's much faster!
@@ -46,7 +49,7 @@ variable set to the correct value:
 The example is located in `examples/http.js`. It exercises the core
 functionality of the module.
 
-    cd sepia
+    cd replayer
     npm install
     rm -r fixtures # in case you had previously generated fixtures
     VCR_MODE=cache node examples/cache
@@ -62,9 +65,9 @@ To run all the examples in the correct modes, run:
 
 ## Motivation
 
-<img src="https://raw.github.com/linkedin/sepia/master/architecture-diagram-1.png" alt="" height="200" width="450" align="center" />
+<img src="https://raw.github.com/aneilbaboo/replayer/master/architecture-diagram-1.png" alt="" height="200" width="450" align="center" />
 
-Sepia was created for the following use case:
+Replayer was created for the following use case:
 
 * Integration tests are being run against a node.js server under test.
 * The server under test makes HTTP requests to external downstream services.
@@ -74,14 +77,14 @@ Sepia was created for the following use case:
 Even though the server is the system being tested, the stability of the
 integration tests depends on the reliability of the downstream services.
 Additionally, making HTTP calls to live downstream services makes the
-integration tests very slow. To combat this, sepia hooks into the node.js
+integration tests very slow. To combat this, replayer hooks into the node.js
 `http` and `https` modules inside the server process, intercepting outgoing
-HTTP(S) requests. Sepia, records these requests, then plays them back the next
+HTTP(S) requests. replayer, records these requests, then plays them back the next
 time the requests are made.
 
 ## VCR Modes
 
-The value of the `VCR_MODE` environment variable determines how sepia behaves.
+The value of the `VCR_MODE` environment variable determines how replayer behaves.
 Acceptable values are:
 
 * `record`: Make the downstream request, then save it to a fixture file.
@@ -104,7 +107,7 @@ fixture data, several characteristics of the request are examined:
 * The names of all the cookies sent in the request.
 
 This data is then aggregated and sent through an MD5 hash to produce the
-filename. Users of sepia can hook into this process of constructing the
+filename. Users of replayer can hook into this process of constructing the
 filename, as explained in a subsequent sections.
 
 This core functionality is exercised in `examples/http.js` and
@@ -121,8 +124,8 @@ This core functionality is exercised in `examples/http.js` and
 By default, the files are stored in `fixtures/generated` under the directory in
 which the application was started. To override this:
 
-    var sepia = require('sepia');
-    sepia.fixtureDir(path.join(process.cwd(), 'sepia-fixtures'));
+    var replayer = require('replayer');
+    replayer.fixtureDir(path.join(process.cwd(), 'replayer-fixtures'));
 
 If this directory doesn't exist, it will be created.
 
@@ -133,11 +136,11 @@ This functionality is exercised in `examples/fixtureDir`:
 
 ## Configure
 
-Sepia can be optionally configured using a call to `sepia.configure()`. All
+Replayer can be optionally configured using a call to `replayer.configure()`. All
 options have default values, so they need not be configured unless necessary.
 
-    var sepia = require('sepia');
-    sepia.configure({
+    var replayer = require('replayer');
+    replayer.configure({
       verbose: true,
       debug: true
     });
@@ -149,7 +152,7 @@ The full list of options are as follows:
 - `includeHeaderNames`, `headerWhitelist`, `includeCookieNames`,
   `cookieWhitelist`: detailed in a later section.
 - 'debug': Useful for debugging the requests when there is a cache miss. If
-   fixtures are recorded with debug mode true, Sepia will additionally save all
+   fixtures are recorded with debug mode true, replayer will additionally save all
    the incoming requests  as '.request' files. Furthermore, in case of a cache
    miss, during playback, it will attempt to compare the the missing
    request(.missing), against all the available saved requests(.requests)
@@ -185,8 +188,8 @@ and while the `time` query parameter is required for the request to complete,
 you want to playback the same data that was recorded, regardless of what
 timestamp was used during recording and during playback. Use a URL filter:
 
-    var sepia = require('sepia');
-    sepia.filter({
+    var replayer = require('replayer');
+    replayer.filter({
       url: /my-resource/,
       urlFilter: function(url) {
         return url.replace(/time=[0-9]+/, '');
@@ -201,7 +204,7 @@ during recording is unchanged.
 The filter specification can also contain a `bodyFilter` function that operates
 on the request body. Either `urlFilter` or `bodyFilter` may be specified.
 
-Multiple calls to `sepia#filter` may be made. All matching filters are applied
+Multiple calls to `replayer#filter` may be made. All matching filters are applied
 in the order they are specified. The `url` property of the filter is used to
 match the unmodified URL, regardless of the transformations it undergoes due to
 matching `urlFilter` functions.
@@ -219,17 +222,17 @@ certain cookies may affect the authentication mechanism used behind the scenes,
 and while one may wish to exercise both mechanisms, it is not useful to require
 that the actual authentication cookie have a particular value.
 
-Sepia generates filenames based on the presence and absence of header and
+Replayer generates filenames based on the presence and absence of header and
 cookie _names_ by default. In particular, all the header names are lower-cased
 and sorted alphabetically, and this list is used to construct the fixture filename
 corresponding to a request. The same applies to the cookie names.
 
 
 If this feature is not desired, it can be disabled by calling
-`sepia.configure()`:
+`replayer.configure()`:
 
-    var sepia = require('sepia');
-    sepia.configure({
+    var replayer = require('replayer');
+    replayer.configure({
       includeHeaderNames: false,
       includeCookieNames: false
     });
@@ -238,8 +241,8 @@ If this feature is not desired, it can be disabled by calling
 If you also want to include header values, set the includeHeaderValues flag in the
 configure options:
 
-    var sepia = require('sepia');
-    sepia.configure({
+    var replayer = require('replayer');
+    replayer.configure({
       includeHeaderValues: true
     });
 
@@ -250,8 +253,8 @@ strings in it, only the corresponding headers or cookies will be used to
 construct the filename. Either whitelist can be specified in isolation or both
 may be specified:
 
-    var sepia = require('sepia');
-    sepia.configure({
+    var replayer = require('replayer');
+    replayer.configure({
       headerWhitelist: ['upgrade', 'via', 'x-custom'],
       cookieWhitelist: ['oldAuth', 'newAuth']
     });
@@ -265,18 +268,18 @@ Examples of this functionality can be seen in `examples/headers.js`:
 
 ## Hiding Sensitive Data
 
-It is good practice to avoid checking sensitive data into source control.  Sepia
+It is good practice to avoid checking sensitive data into source control.  replayer
 can substituting specific text in headers and bodies with values you specify. The substitute function takes a substitution string as a first argument and a function which
 returns the actual value, presumably retrieved from the environment.  Your fixtures
 will contain the substitution string, and can be safely committed to source control.
 
-    var sepia = require('sepia');
-    sepia.substitute('<SUBSTITUTION1>', function() { return process.env.MY_API_SECRET; });
+    var replayer = require('replayer');
+    replayer.substitute('<SUBSTITUTION1>', function() { return process.env.MY_API_SECRET; });
 
 ## Languages
 
 A downstream request may return different data based on the language requested
-by the server under test. To support this use case, sepia automatically
+by the server under test. To support this use case, replayer automatically
 isolates fixtures based on the value of the `Accept-Language` request header.
 
 The first language in the list of languages specified by this header is used as
@@ -295,35 +298,35 @@ Examples of this functionality can be seen in `examples/languages.js`:
 ## VCR Cassettes
 
 A series of downstream requests can be isolated, and their fixtures stored in a
-separate directory, using sepia.fixtureDir(). However, this requires that the
-grouping happens in the same process as the one running sepia. In the
+separate directory, using replayer.fixtureDir(). However, this requires that the
+grouping happens in the same process as the one running replayer. In the
 motivating example given at the beginning of this document, the integration
 test driver runs in a completely different process than the server managed by
-sepia.
+replayer.
 
-To help manage the sepia instance in a separate process, sepia itself can start
+To help manage the replayer instance in a separate process, replayer itself can start
 up an embedded HTTP server in the process where it replaces the HTTP request
 functions. The test process can then communicate with this HTTP server and set
 options, namely the directory into which fixtures will go. This architecture is
 is visualized as follows:
 
-<img src="https://raw.github.com/linkedin/sepia/master/architecture-diagram-2.png" alt="" height="210" width="450" align="center" />
+<img src="https://raw.github.com/aneilbaboo/replayer/master/architecture-diagram-2.png" alt="" height="210" width="450" align="center" />
 
 This can be enabled by asking to start up the embedded server:
 
-    var sepia = require('sepia').withSepiaServer();
+    var replayer = require('replayer').withreplayerServer();
 
 Note that because this causes a new server to be started, the process that
-includes sepia should shutdown the server as follows:
+includes replayer should shutdown the server as follows:
 
-    sepia.shutdown();
+    replayer.shutdown();
 
 This can be used to emulate "cassette"-like functionality:
 
-    // suppose the process that is running sepia is bound to port 8080
+    // suppose the process that is running replayer is bound to port 8080
     // in the test process
     request.post({
-      url: 'localhost:58080/testOptions', // sepia's embedded server
+      url: 'localhost:58080/testOptions', // replayer's embedded server
       json: {
         testName: 'test1'
       }
@@ -336,7 +339,7 @@ This can be used to emulate "cassette"-like functionality:
     });
 
 Note that the functionality of setting the test options will be available in a
-sepia client library in the future.
+replayer client library in the future.
 
 Currently, the port of the embedded server is hard-coded to be `58080`, but
 this will be configurable in the future. Furthermore, only the "test name" can
@@ -354,8 +357,8 @@ useful to specify a single fixture as "global," that is living outside the
 test-specific directory and shared by multiple tests. To achieve this, a filter
 can be added:
 
-    var sepia = require('sepia');
-    sepia.filter({
+    var replayer = require('replayer');
+    replayer.filter({
       url: /my-global-resource/,
       global: true
     });
@@ -367,27 +370,27 @@ name is.
 ### Cassettes Without Modifying Global State
 
 The above approach to VCR cassettes modifies global state in the server managed
-by sepia. This prevents running multiple tests--with different test names--in
+by replayer. This prevents running multiple tests--with different test names--in
 parallel, because the nature of the global state is such that only one test
 name can be set at one time. If you're willing to pass along information from
-an incoming request down to a downstream request, sepia provides a stateless
-alternative: the `x-sepia-test-name` header.
+an incoming request down to a downstream request, replayer provides a stateless
+alternative: the `x-replayer-test-name` header.
 
-The `x-sepia-test-name` header, when passed to a downstream request, will
+The `x-replayer-test-name` header, when passed to a downstream request, will
 override the globally-configured test name. The header itself is not passed to
 any downstream service, nor is the header name used in the calculation of the
 fixture name.
 
 The downside is that the server under test must pass along information from the
 test integration runner to each of its downstream requests, because otherwise,
-sepia has no means of determining the associated test name for a particular
+replayer has no means of determining the associated test name for a particular
 dowstream request.
 
 ## Limitations
 
 ### Repeated Identical HTTP Requests
 
-If the same request returns different data during different invocations, sepia
+If the same request returns different data during different invocations, replayer
 has no way of differentiating between the two invocations. This can happen
 when, for example, a resources is fetched using a `GET` request, it is
 modified using a `PUT` request, and it is fetched once more using a `GET`
@@ -406,12 +409,17 @@ services, which would then ignore this parameter.
 
 ## Technical Details
 
-Sepia wraps around the `http#request` and the `https#request` functions. Each
+replayer wraps around the `http#request` and the `https#request` functions. Each
 outgoing request is trapped. Depending on the value of the `VCR_MODE`
 environment variable, the request is either made and stored in a file, or the
 data is retrieved from a file and sent back using a dummy response object.
 
-## Contributors
+## Replayer Contributors
+
+* [Aneil Mallavarapu](https://github.com/aneilbaboo)
+* [Jason Palmer](https://github.com/palmerj3)
+
+## Original Sepia Contributors
 
 * [Vlad Shlosberg](https://github.com/vshlos)
 * [Ethan Goldblum](https://github.com/egoldblum)

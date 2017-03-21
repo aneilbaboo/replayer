@@ -13,7 +13,7 @@
 // limitations under the License.
 
 var fs = require('fs');
-var sepiaUtil = require('./util');
+var replayerUtil = require('./util');
 var EventEmitter = require('events').EventEmitter;
 var http = require('http');
 
@@ -51,9 +51,9 @@ module.exports.configure = function(mode) {
   protocolModule.globalAgent.maxSockets = 1000;
 
   protocolModule.request = function(options, callback) {
-    var reqUrl = sepiaUtil.urlFromHttpRequestOptions(options, protocol);
+    var reqUrl = replayerUtil.urlFromHttpRequestOptions(options, protocol);
     var reqBody = [];
-    var debug = sepiaUtil.shouldFindMatchingFixtures();
+    var debug = replayerUtil.shouldFindMatchingFixtures();
 
     var req = new EventEmitter();
     req.setTimeout = req.abort = function() {};
@@ -76,18 +76,18 @@ module.exports.configure = function(mode) {
       });
 
       reqBody = Buffer.concat(reqBody);
-      var filename = sepiaUtil.constructFilename(options.method, reqUrl,
+      var filename = replayerUtil.constructFilename(options.method, reqUrl,
         reqBody.toString(), options.headers);
 
-      options.headers = sepiaUtil.removeInternalHeaders(options.headers);
+      options.headers = replayerUtil.removeInternalHeaders(options.headers);
 
-      var forceLive = sepiaUtil.shouldForceLive(reqUrl);
+      var forceLive = replayerUtil.shouldForceLive(reqUrl);
 
       // Only called if either the fixture with the constructed filename
       // exists, or we're playing back passed in data.
       function playback(resHeaders, resBody) {
         if (!forceLive) {
-          var headerContent = sepiaUtil.substituteWithRealValues(
+          var headerContent = replayerUtil.substituteWithRealValues(
             fs.readFileSync(filename + '.headers').toString());
           resHeaders = JSON.parse(headerContent);
         }
@@ -120,7 +120,7 @@ module.exports.configure = function(mode) {
         }
 
         if (!forceLive) {
-          resBody = sepiaUtil.substituteWithRealValues(fs.readFileSync(filename).toString());
+          resBody = replayerUtil.substituteWithRealValues(fs.readFileSync(filename).toString());
         }
 
         req.emit('response', res);
@@ -160,7 +160,7 @@ module.exports.configure = function(mode) {
 
         if (debug) {
           var bestMatchFileName =
-            sepiaUtil.findTheBestMatchingFixture(missingFileName);
+            replayerUtil.findTheBestMatchingFixture(missingFileName);
           if (bestMatchFileName) {
             throw new Error('Fixture ' + filename + ' not found,  Expected ' +
               missingFileName +
@@ -188,7 +188,7 @@ module.exports.configure = function(mode) {
         };
 
         fs.writeFileSync(filename + '.headers',
-          sepiaUtil.substituteWithOpaqueKeys(JSON.stringify(headers, null, 2)));
+          replayerUtil.substituteWithOpaqueKeys(JSON.stringify(headers, null, 2)));
       }
 
       // Suppose the request times out while recording. We don't want the
@@ -230,7 +230,7 @@ module.exports.configure = function(mode) {
             }, resBody);
           } else {
             fs.writeFileSync(filename,
-              sepiaUtil.substituteWithOpaqueKeys(resBody.toString()));
+              replayerUtil.substituteWithOpaqueKeys(resBody.toString()));
 
             // Store the request, if debug is true
             if (debug) {

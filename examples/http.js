@@ -19,7 +19,7 @@
  * VCR_MODE=record   node examples/http
  * VCR_MODE=playback node examples/http
  *
- * The most basic test of sepia functionality: record a http.request call, then
+ * The most basic test of replayer functionality: record a http.request call, then
  * play it back.
  */
 

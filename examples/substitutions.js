@@ -27,7 +27,7 @@ var http = require('http');
 var request = require('request');
 var step = require('step');
 var common = require('./common');
-var sepia = require('../');
+var replayer = require('../');
 
 // -- ECHO SERVER --------------------------------------------------------------
 
@@ -80,10 +80,10 @@ function makeRequest(title, next) {
 
 step(
   function() {
-    sepia.substitute('<OPAQUE_SECRET1>', function() { return 'TheActualSecret1'; });
-    sepia.substitute('<OPAQUE_SECRET2>', function() { return 'TheActualSecret2'; });
-    sepia.substitute('<OPAQUE_SECRET3>', function() { return 'TheActualSecret3'; });
-    sepia.substitute('<OPAQUE_SECRET4>', function() { return 'TheActualSecret4'; });
+    replayer.substitute('<OPAQUE_SECRET1>', function() { return 'TheActualSecret1'; });
+    replayer.substitute('<OPAQUE_SECRET2>', function() { return 'TheActualSecret2'; });
+    replayer.substitute('<OPAQUE_SECRET3>', function() { return 'TheActualSecret3'; });
+    replayer.substitute('<OPAQUE_SECRET4>', function() { return 'TheActualSecret4'; });
 
     setTimeout(this, 100);
   }, // let the server start up
