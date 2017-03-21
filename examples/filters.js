@@ -37,7 +37,7 @@ var common = require('./common');
 
 common.ensureNonCacheMode('filters.js');
 
-var sepia = require('..');
+var replayer = require('..');
 
 // -- TEST SERVER --------------------------------------------------------------
 
@@ -71,7 +71,7 @@ function makeHttpRequest(next) {
   var timestamp = Date.now();
   var reqBody = 'time * 2 = ' + (timestamp * 2);
 
-  sepia.filter({
+  replayer.filter({
     url: /.*/,
     urlFilter: function(url) {
       // disregard the timestamp in the query parameter

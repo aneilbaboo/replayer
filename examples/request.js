@@ -19,7 +19,7 @@
  * VCR_MODE=record   node examples/request
  * VCR_MODE=playback node examples/request
  *
- * Tests the ability to use the request module, which works with sepia because
+ * Tests the ability to use the request module, which works with replayer because
  * it uses http(s).request internally.
  */
 

@@ -34,7 +34,7 @@
  * non-existant.
  *
  * Note that while updating this test, I was unable to reproduce the issue.
- * Perhaps enhancements that were added to sepia later down the line made this
+ * Perhaps enhancements that were added to replayer later down the line made this
  * a non-issue, but the test is available to prevent a regression.
  */
 

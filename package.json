@@ -1,26 +1,28 @@
 {
-  "name": "sepia",
+  "name": "replayer",
   "author": "Avik Das <avik.das@berkeley.edu>",
   "version": "2.0.1",
-  "description": "A VCR-like module that records HTTP interactions and plays them back for speed and reliability",
+  "description": "A VCR-like module that records HTTP interactions and plays them back for speed and reliability; forked from https://github.com/linkedin/sepia",
   "keywords": [
     "http",
     "testing"
   ],
-  "homepage": "https://github.com/linkedin/sepia",
-  "bugs": "https://github.com/linkedin/sepia/issues",
+  "homepage": "https://github.com/aneilbaboo/replayer",
+  "bugs": "https://github.com/aneilbaboo/replayer/issues",
   "repository": {
     "type": "git",
-    "url": "https://github.com/linkedin/sepia.git"
+    "url": "https://aneilbaboo/linkedin/replayer.git"
   },
   "license": "Apache",
   "contributors": [
-    "Vlad Shlosberg (https://github.com/vshlos)",
-    "Ethan Goldblum (https://github.com/egoldblum)",
-    "Shao-Hua Kao (https://github.com/ethankao)",
-    "Deepank Gupta (https://github.com/deepankgupta)",
-    "Priyanka Salvi (http://www.linkedin.com/in/coolsmartgalpriyankanew)",
-    "Ashima Atul (https://github.com/ashimaatul)"
+    "Aneil Mallavarapu (https://github.com/aneilbaboo)",
+    "Jason Palmer (https://github.com/palmerj3)",
+    "Vlad Shlosberg, sepia (https://github.com/vshlos)",
+    "Ethan Goldblum, sepia  (https://github.com/egoldblum)",
+    "Shao-Hua Kao, sepia (https://github.com/ethankao)",
+    "Deepank Gupta, sepia (https://github.com/deepankgupta)",
+    "Priyanka Salvi, sepia (http://www.linkedin.com/in/coolsmartgalpriyankanew)",
+    "Ashima Atul, sepia (https://github.com/ashimaatul)"
   ],
 
   "dependencies": {

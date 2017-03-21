@@ -19,7 +19,7 @@
  * VCR_MODE=record   node examples/thenRequest
  * VCR_MODE=playback node examples/thenRequest
  *
- * Tests the ability to use the then-request module, which works with sepia
+ * Tests the ability to use the then-request module, which works with replayer
  * because it uses http(s).request internally.
  */
 

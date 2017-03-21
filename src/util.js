@@ -50,7 +50,7 @@ function reset() {
   globalOptions.debug = false;
 
   // These test options are set via an HTTP request to the embedded HTTP server
-  // provided by sepia. The options are reset each time any of them are set.
+  // provided by replayer. The options are reset each time any of them are set.
   globalOptions.testOptions = {};
 }
 
@@ -178,7 +178,7 @@ function removeInternalHeaders(headers) {
   var filtered = {};
 
   for (var key in headers) {
-    if (key.indexOf('x-sepia-') !== 0) {
+    if (key.indexOf('x-replayer-') !== 0) {
       filtered[key] = headers[key];
     }
   }
@@ -356,8 +356,8 @@ function constructAndCreateFixtureFolder(reqUrl, reqHeaders) {
 
   var testFolder = '';
   if (!usesGlobalFixtures(reqUrl)){
-    if (reqHeaders['x-sepia-test-name']) {
-      testFolder = reqHeaders['x-sepia-test-name'];
+    if (reqHeaders['x-replayer-test-name']) {
+      testFolder = reqHeaders['x-replayer-test-name'];
     } else if (globalOptions.testOptions.testName) {
       testFolder = globalOptions.testOptions.testName;
     }

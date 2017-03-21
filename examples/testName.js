@@ -42,8 +42,8 @@ var step = require('step');
 require('should');
 var common = require('./common');
 
-var sepia = require('..')
-  .withSepiaServer();
+var replayer = require('..')
+  .withreplayerServer();
 
 // -- ECHO SERVER --------------------------------------------------------------
 
@@ -55,11 +55,11 @@ var httpServer = http.createServer(function(req, res) {
   };
 
   // One piece of functionality being tested is the use of the
-  // x-sepia-test-name header, which is not meant to be passed along to
+  // x-replayer-test-name header, which is not meant to be passed along to
   // downstream services. For that reason, we pass that header back to the
   // client so that it can test the absence of the header.
-  if (req.headers['x-sepia-test-name']) {
-    headers['x-sepia-test-name'] = req.headers['x-sepia-test-name'];
+  if (req.headers['x-replayer-test-name']) {
+    headers['x-replayer-test-name'] = req.headers['x-replayer-test-name'];
   }
 
   // simulate server latency
@@ -139,7 +139,7 @@ function requestWithHeader(testName, cacheHitExpected, next) {
   request({
     url: 'http://localhost:1337/local',
     headers: {
-      'x-sepia-test-name': testName
+      'x-replayer-test-name': testName
     }
   }, function(err, data, body) {
     var time = Date.now() - start;
@@ -151,7 +151,7 @@ function requestWithHeader(testName, cacheHitExpected, next) {
 
     common.verify(function() {
       common.shouldUseCache(cacheHitExpected, time);
-      data.headers.should.not.have.property('x-sepia-test-name');
+      data.headers.should.not.have.property('x-replayer-test-name');
     });
 
     console.log();
@@ -164,12 +164,12 @@ function requestWithHeader(testName, cacheHitExpected, next) {
 
 // To change the test name, we have to be able to access the live server,
 // regardless of whether or not we're playing back fixtures.
-sepia.filter({
+replayer.filter({
   url: /:58080/,
   forceLive: true
 });
 
-sepia.filter({
+replayer.filter({
   url: /global/i,
   global: true
 });
@@ -186,5 +186,5 @@ step(
   function() { requestWithHeader('test3', false, this); },
   function() { requestWithHeader('test3', true, this); },
   _.bind(httpServer.close, httpServer),
-  _.bind(sepia.shutdown, sepia)
+  _.bind(replayer.shutdown, replayer)
 );

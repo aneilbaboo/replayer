@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// By default, we won't start up the sepia server.
+// By default, we won't start up the replayer server.
 var server;
 
 switch (process.env.VCR_MODE) {
@@ -31,7 +31,7 @@ case 'cache':
 // otherwise, leave http alone
 }
 
-function withSepiaServer() {
+function withreplayerServer() {
   switch (process.env.VCR_MODE) {
   case 'record':
   case 'playback':
@@ -41,11 +41,11 @@ function withSepiaServer() {
   }
 
   // Allows for:
-  //   var sepia = require('sepia').withSepiaServer();
+  //   var replayer = require('replayer').withreplayerServer();
   return module.exports;
 }
 
-// It's safe to call this function whether or not sepia had any effect.
+// It's safe to call this function whether or not replayer had any effect.
 function shutdown(next) {
   if (server) {
     return server.shutdown(next);
@@ -56,10 +56,10 @@ function shutdown(next) {
   }
 }
 
-var sepiaUtil = require('./src/util');
-module.exports.filter = sepiaUtil.addFilter;
-module.exports.substitute = sepiaUtil.addSubstitution;
-module.exports.fixtureDir = sepiaUtil.setFixtureDir;
-module.exports.configure = sepiaUtil.configure;
-module.exports.withSepiaServer = withSepiaServer;
+var replayerUtil = require('./src/util');
+module.exports.filter = replayerUtil.addFilter;
+module.exports.substitute = replayerUtil.addSubstitution;
+module.exports.fixtureDir = replayerUtil.setFixtureDir;
+module.exports.configure = replayerUtil.configure;
+module.exports.withreplayerServer = withreplayerServer;
 module.exports.shutdown = shutdown;

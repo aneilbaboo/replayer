@@ -33,7 +33,7 @@ var _ = require('lodash');
 var step = require('step');
 var common = require('./common');
 
-var sepia = require('..');
+var replayer = require('..');
 
 // -- ECHO SERVER --------------------------------------------------------------
 
@@ -257,7 +257,7 @@ function sameWhitelisted(next) {
     }
   };
 
-  sepia.configure({
+  replayer.configure({
     headerWhitelist: ['H1', 'h2'], // capitalization doesn't matter
     cookieWhitelist: ['C1', 'c2']  // capitalization doesn't matter
   });
@@ -275,7 +275,7 @@ step(
   function() { diffHeadersDiffCookies(this); },
   function() { sameWhitelisted(this); },
   //function() {
-  //  sepia.configure({
+  //  replayer.configure({
   //    headerWhitelist: ['H1', 'h2'], // capitalization doesn't matter
   //    cookieWhitelist: ['C1', 'c2']  // capitalization doesn't matter
   //  });

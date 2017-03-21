@@ -13,7 +13,7 @@
 // limitations under the License.
 
 var http = require('http');
-var sepiaUtil = require('./util');
+var replayerUtil = require('./util');
 
 var httpServer = http.createServer(function(req, res) {
   req.setEncoding('utf-8');
@@ -26,7 +26,7 @@ var httpServer = http.createServer(function(req, res) {
     var status = 404;
     if (/^\/testOptions/.test(req.url)) {
       var testOptions = JSON.parse(body);
-      sepiaUtil.setTestOptions(testOptions);
+      replayerUtil.setTestOptions(testOptions);
       status = 200;
     }
     res.writeHead(status);

@@ -34,7 +34,7 @@ require('should');
 var step = require('step');
 var common = require('./common');
 
-var sepia = require('..');
+var replayer = require('..');
 
 // -- ECHO SERVER --------------------------------------------------------------
 
@@ -130,7 +130,7 @@ function cachedRequests(next) {
 
 // -- RUN EVERYTHING -----------------------------------------------------------
 
-sepia.filter({
+replayer.filter({
   url: /live/i,
   forceLive: true
 });
