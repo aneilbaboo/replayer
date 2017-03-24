@@ -14,30 +14,28 @@
 
 // By default, we won't start up the replayer server.
 var server;
+var cache = require('./src/cache');
 
 switch (process.env.VCR_MODE) {
-case 'record':
-  var cache = require('./src/cache');
-  cache.configure('record');
-  break;
-case 'playback':
-  var cache = require('./src/cache');
-  cache.configure('playback');
-  break;
-case 'cache':
-  var cache = require('./src/cache');
-  cache.configure('cache');
-  break;
-// otherwise, leave http alone
+  case 'record':
+    cache.configure('record');
+    break;
+  case 'playback':
+    cache.configure('playback');
+    break;
+  case 'cache':
+    cache.configure('cache');
+    break;
+  // otherwise, leave http alone
 }
 
 function withreplayerServer() {
   switch (process.env.VCR_MODE) {
-  case 'record':
-  case 'playback':
-  case 'cache':
-    server = require('./src/server');
-    break;
+    case 'record':
+    case 'playback':
+    case 'cache':
+      server = cache;
+      break;
   }
 
   // Allows for:
@@ -57,6 +55,9 @@ function shutdown(next) {
 }
 
 var replayerUtil = require('./src/util');
+module.exports.enable = cache.enable;
+module.exports.disable = cache.disable;
+module.exports.isEnabled = cache.isEnabled;
 module.exports.filter = replayerUtil.addFilter;
 module.exports.substitute = replayerUtil.addSubstitution;
 module.exports.fixtureDir = replayerUtil.setFixtureDir;

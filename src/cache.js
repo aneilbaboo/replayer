@@ -22,35 +22,83 @@ var recordMisses = true;
 
 module.exports.configure = function(mode) {
   switch (mode) {
-  case 'record':
-    playbackHits = false;
-    recordMisses = true;
-    break;
+    case 'record':
+      playbackHits = false;
+      recordMisses = true;
+      break;
 
-  case 'playback':
-    playbackHits = true;
-    recordMisses = false;
-    break;
+    case 'playback':
+      playbackHits = true;
+      recordMisses = false;
+      break;
 
-  case 'cache':
-    playbackHits = true;
-    recordMisses = true;
-    break;
+    case 'cache':
+      playbackHits = true;
+      recordMisses = true;
+      break;
 
-  default:
-    throw new Error('Unrecognized mode: ' + mode);
+    default:
+      throw new Error('Unrecognized mode: ' + mode);
   }
 };
 
+/**
+* Turns replayer on.
+*/
+module.exports.enable = function enable() {
+  ['http', 'https'].forEach(function(protocol) {
+    var protocolModule = require(protocol);
+    if (protocolModule.__replayerRequest) {
+      protocolModule.request = protocolModule.__replayerRequest;
+    } else {
+      throw new Error('Unexpectedly, %s.__replayerRequest is missing.  Cannot enable replayer.', protocol);
+    }
+  });
+};
+
+/**
+* Turns replayer off.
+*/
+module.exports.disable = function disable() {
+  ['http', 'https'].forEach(function(protocol) {
+    var protocolModule = require(protocol);
+    if (protocolModule.__originalRequest) {
+      protocolModule.request = protocolModule.__originalRequest;
+    } else {
+      throw new Error('Unexpectedly, %s.__replayerRequest is missing.  Cannot enable replayer.', protocol);
+    }
+  });
+};
+
+module.exports.isEnabled = function isEnabled() {
+  var http = require('http');
+  var https = require('https');
+  if (http.request === http.__replayerRequest) {
+    if (https.request === https.__replayerRequest) {
+      return true;
+    } else {
+      throw new Error('Http and https request methods are in a conflicted state.');
+    }
+  } else {
+    if (https.request === https.__replayerRequest) {
+      throw new Error('Http and https request methods are in a conflicted state.');
+    } else {
+      return false;
+    }
+  }
+};
+
+//
 ['http', 'https'].forEach(function(protocol) {
   var protocolModule = require(protocol);
   var oldRequest = protocolModule.request;
+  protocolModule.__originalRequest = oldRequest;
 
   // Ensure there are enough sockets to handle timeout issues that arise due to
   // slow servers or unaccessible servers when recording.
   protocolModule.globalAgent.maxSockets = 1000;
 
-  protocolModule.request = function(options, callback) {
+  protocolModule.__replayerRequest = protocolModule.request = function replayerRequest(options, callback) {
     var reqUrl = replayerUtil.urlFromHttpRequestOptions(options, protocol);
     var reqBody = [];
     var debug = replayerUtil.shouldFindMatchingFixtures();
