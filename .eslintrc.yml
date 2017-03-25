@@ -1,0 +1,29 @@
+env:
+  es6: true
+  node: true
+  mocha: true
+extends: 'eslint:recommended'
+parserOptions:
+  ecmaFeatures:
+        experimentalObjectRestSpread: true
+plugins:
+  - mocha
+rules:
+  "strict": "off"
+  "no-unused-vars":
+    - error
+    - vars: all
+      varsIgnorePattern: "^_$"
+  indent:
+    - error
+    - 2
+    - SwitchCase: 1
+  linebreak-style:
+    - error
+    - unix
+  quotes:
+    - off
+  semi:
+    - error
+    - always
+  "mocha/no-exclusive-tests": error

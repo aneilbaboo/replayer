@@ -229,11 +229,11 @@ function log(color, args) {
     return;
   }
 
-  var args = Array.prototype.slice.call(args);
+  args = Array.prototype.slice.call(args);
   args.unshift(color);
   args.push(COLOR_RESET);
 
-  console.log.apply(console, args);
+  console.log.apply(console, args); // eslint-disable-line
 }
 
 function logFixtureStatus(filename, filenameParts) {
@@ -286,7 +286,7 @@ function parseCookiesNames(cookieValue) {
 
   var ary = cookieValue.toString().split(/;\s+/);
   ary.forEach(function(ck) {
-    var ck = ck.trim();
+    ck = ck.trim();
     if (ck !== '') {
       var parsed = ck.split('=')[0];
       if (parsed && parsed !== '') {
