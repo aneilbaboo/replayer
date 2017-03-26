@@ -209,7 +209,7 @@ function touchOnHit(filename) {
   }
 
   filename = filename + '.headers';
-  var now = Date.now();
+  var now = Date.now() / 1000;
 
   if (fs.existsSync(filename)) {
     fs.utimesSync(filename, now, now);
