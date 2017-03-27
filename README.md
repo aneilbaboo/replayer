@@ -1,6 +1,6 @@
 # replayer - replay HTTP requests
 
-[![CircleCI](https://circleci.com/gh/aneilbaboo/replayer.svg?style=svg&circle-token=24d0acf1634693970b9b354b4a0d5f206d2992af)](https://circleci.com/gh/aneilbaboo/replayer)
+[![CircleCI](https://circleci.com/gh/aneilbaboo/replayer.svg?style=shield&circle-token=24d0acf1634693970b9b354b4a0d5f206d2992af)](https://circleci.com/gh/aneilbaboo/replayer)
 
 This project was forked from https://github.com/linkedin/sepia, because it is
 no longer being maintained.
