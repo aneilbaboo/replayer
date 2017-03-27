@@ -41,8 +41,8 @@ describe('cache.js', function() {
     it('should have assigned __originalRequest and __replayerRequest functions', function () {
       var http = require('http');
       var https = require('https');
-      http.__originalRequest.name.should.equal('request');
-      https.__originalRequest.name.should.equal('request');
+      http.__originalRequest.name.should.not.equal('replayerRequest');
+      https.__originalRequest.name.should.not.equal('replayerRequest');
       http.__replayerRequest.name.should.equal('replayerRequest');
       https.__replayerRequest.name.should.equal('replayerRequest');
     });
@@ -77,15 +77,15 @@ describe('cache.js', function() {
     describe('#disable', function () {
       it('should reassign the original request functions of http and https', function () {
         cache.disable();
-        require('http').request.name.should.equal('request');
-        require('https').request.name.should.equal('request');
+        require('http').request.name.should.not.equal('replayerRequest');
+        require('https').request.name.should.not.equal('replayerRequest');
       });
 
       it('should reassign the original request functions of http and https even when enable was previously called', function () {
         cache.enable();
         cache.disable();
-        require('http').request.name.should.equal('request');
-        require('https').request.name.should.equal('request');
+        require('http').request.name.should.not.equal('replayerRequest');
+        require('https').request.name.should.not.equal('replayerRequest');
       });
     });
   });
