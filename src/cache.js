@@ -331,9 +331,16 @@ module.exports.isEnabled = function isEnabled() {
       });
 
       realReq.on('socket', function(socket) {
-        socket.on('timeout', function() {
-          timedOut = true;
-        });
+        var timeoutListener = function () { timedOut = true; };
+        var cleanupSocket = function() {
+          socket.removeListener('timeout', timeoutListener);
+        };
+
+        socket.on('timeout', timeoutListener);
+        realReq.on('response', cleanupSocket);
+        realReq.on('error', cleanupSocket);
+        realReq.on('abort', cleanupSocket);
+        realReq.on('end', cleanupSocket);
       });
 
       realReq.end(reqBody);
