@@ -148,6 +148,16 @@ module.exports.isEnabled = function isEnabled() {
         req.socket = socket;
         req.emit('socket', socket);
 
+        if (!resHeaders) {
+          if (resBody.error) {
+            req.emit('error', resBody.error);
+          } else {
+            req.emit('error',
+            new Error(`No response headers. Response body: ${JSON.stringify(resBody)}`));
+          }
+          return;
+        }
+
         if (resHeaders.timeout) {
           socket.emit('timeout');
           req.emit('error', new Error('Timeout'));
