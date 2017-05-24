@@ -2,8 +2,8 @@
 
 [![CircleCI](https://circleci.com/gh/aneilbaboo/replayer.svg?style=shield&circle-token=24d0acf1634693970b9b354b4a0d5f206d2992af)](https://circleci.com/gh/aneilbaboo/replayer)
 
-This project was forked from https://github.com/linkedin/sepia, because it is
-no longer being maintained.
+This project was forked from https://github.com/linkedin/sepia, which [has been
+abandoned](https://github.com/linkedin/sepia/issues/27 ).
 
 Replayer is a VCR-like module for node.js that records HTTP interactions, then
 plays them back exactly like the first time they were invoked. Replayer was
@@ -16,9 +16,9 @@ Replayer should work with any HTTP library in node.js that uses `http#request` a
 ensure it works with [the `then-request`
 module](https://github.com/then/then-request).
 
-Replayer was developed and is in use at LinkedIn since early 2013. There, it is
-used to improve the speed and reliability of the integration test suite for the
-node.js server powering the mobile applications.
+Replayer was originally developed at LinkedIn in early 2013. There, it is used to 
+improve the speed and reliability of the integration test suite for the node.js 
+server powering the mobile applications.
 
 https://github.com/aneilbaboo/replayer  
 https://npmjs.org/package/replayer
