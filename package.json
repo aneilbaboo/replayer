@@ -1,7 +1,7 @@
 {
   "name": "replayer",
   "author": "Avik Das <avik.das@berkeley.edu>",
-  "version": "2.1.2",
+  "version": "2.1.3",
   "description": "A VCR-like module that records HTTP interactions and plays them back for speed and reliability; forked from https://github.com/linkedin/sepia",
   "keywords": [
     "http",
