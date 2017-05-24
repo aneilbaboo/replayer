@@ -19,6 +19,23 @@ var http = require('http');
 
 var playbackHits = true;
 var recordMisses = true;
+var requestMethodsToStub = [
+  'abort',
+  'addTrailers',
+  'destroy',
+  'flush',
+  'flushHeaders',
+  'getHeader',
+  'getHeaderNames',
+  'getHeaders',
+  'hasHeader',
+  'onSocket',
+  'removeHeader',
+  'setHeader',
+  'setNoDelay',
+  'setSocketKeepAlive',
+  'setTimeout'
+];
 
 module.exports.configure = function(mode) {
   switch (mode) {
@@ -103,8 +120,7 @@ module.exports.isEnabled = function isEnabled() {
     var reqBody = [];
     var debug = replayerUtil.shouldFindMatchingFixtures();
 
-    var req = new EventEmitter();
-    req.setTimeout = req.abort = function() {};
+    var req = stubMethods(new EventEmitter());
 
     req.write = function(chunk) {
       reqBody.push(chunk);
@@ -349,6 +365,14 @@ module.exports.isEnabled = function isEnabled() {
     return req;
   };
 });
+
+function stubMethods(req) {
+  requestMethodsToStub.forEach(function(method) {
+    req[method] = function() {};
+  });
+
+  return req;
+}
 
 function writeRequestFile(requestData, filename) {
   fs.writeFileSync(filename + '.request',
