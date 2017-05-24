@@ -14,28 +14,30 @@
 
 // By default, we won't start up the replayer server.
 var server;
-var cache = require('./src/cache');
 
 switch (process.env.VCR_MODE) {
-  case 'record':
-    cache.configure('record');
-    break;
-  case 'playback':
-    cache.configure('playback');
-    break;
-  case 'cache':
-    cache.configure('cache');
-    break;
-  // otherwise, leave http alone
+case 'record':
+  var cache = require('./src/cache');
+  cache.configure('record');
+  break;
+case 'playback':
+  var cache = require('./src/cache');
+  cache.configure('playback');
+  break;
+case 'cache':
+  var cache = require('./src/cache');
+  cache.configure('cache');
+  break;
+// otherwise, leave http alone
 }
 
 function withreplayerServer() {
   switch (process.env.VCR_MODE) {
-    case 'record':
-    case 'playback':
-    case 'cache':
-      server = cache;
-      break;
+  case 'record':
+  case 'playback':
+  case 'cache':
+    server = require('./src/server');
+    break;
   }
 
   // Allows for:
