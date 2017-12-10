@@ -81,3 +81,8 @@ start_test 'substitute secrets'
 rm -r fixtures/
 VCR_MODE=record   node examples/substitutions
 VCR_MODE=playback node examples/substitutions
+
+start_test 'handle compressed responses'
+rm -r fixtures/
+VCR_MODE=record   node examples/compressed
+VCR_MODE=playback node examples/compressed

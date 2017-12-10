@@ -13,6 +13,7 @@
 // limitations under the License.
 
 var fs = require('fs');
+var zlib = require('zlib');
 var replayerUtil = require('./util');
 var EventEmitter = require('events').EventEmitter;
 var http = require('http');
@@ -303,6 +304,12 @@ module.exports.isEnabled = function isEnabled() {
               headers: res.headers
             }, resBody);
           } else {
+            var encoding = res.headers['content-encoding'];
+            if (encoding && encoding.match(/gzip|deflate/)) {
+              resBody = zlib.unzipSync(resBody);
+              delete res.headers['content-encoding'];
+            }
+
             fs.writeFileSync(filename,
               replayerUtil.substituteWithOpaqueKeys(resBody.toString()));
 
