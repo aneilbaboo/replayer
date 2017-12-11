@@ -296,6 +296,15 @@ module.exports.isEnabled = function isEnabled() {
         res.on('end', function() {
           var resBody = Buffer.concat(resBodyChunks);
 
+          // uncompress the response body if required
+          switch(res.headers['content-encoding']) {
+          case 'gzip':
+          case 'deflate':
+            resBody = zlib.unzipSync(resBody);
+            delete res.headers['content-encoding'];
+            break;
+          }
+
           if (forceLive) {
             // Don't write the response to any files, and just send it back to
             // whoever issued the request.
@@ -304,12 +313,6 @@ module.exports.isEnabled = function isEnabled() {
               headers: res.headers
             }, resBody);
           } else {
-            var encoding = res.headers['content-encoding'];
-            if (encoding && encoding.match(/gzip|deflate/)) {
-              resBody = zlib.unzipSync(resBody);
-              delete res.headers['content-encoding'];
-            }
-
             fs.writeFileSync(filename,
               replayerUtil.substituteWithOpaqueKeys(resBody.toString()));
 
