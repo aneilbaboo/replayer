@@ -13,6 +13,7 @@
 // limitations under the License.
 
 var fs = require('fs');
+var zlib = require('zlib');
 var replayerUtil = require('./util');
 var EventEmitter = require('events').EventEmitter;
 var http = require('http');
@@ -294,6 +295,15 @@ module.exports.isEnabled = function isEnabled() {
 
         res.on('end', function() {
           var resBody = Buffer.concat(resBodyChunks);
+
+          // uncompress the response body if required
+          switch(res.headers['content-encoding']) {
+          case 'gzip':
+          case 'deflate':
+            resBody = zlib.unzipSync(resBody);
+            delete res.headers['content-encoding'];
+            break;
+          }
 
           if (forceLive) {
             // Don't write the response to any files, and just send it back to
