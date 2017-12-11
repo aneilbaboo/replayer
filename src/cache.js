@@ -16,6 +16,7 @@ var fs = require('fs');
 var replayerUtil = require('./util');
 var EventEmitter = require('events').EventEmitter;
 var http = require('http');
+var url = require('url');
 
 var playbackHits = true;
 var recordMisses = true;
@@ -119,6 +120,7 @@ module.exports.isEnabled = function isEnabled() {
     var reqUrl;
     if (typeof options === 'string') {
       reqUrl = options;
+      options = url.parse(options);
     } else {
       reqUrl = replayerUtil.urlFromHttpRequestOptions(options, protocol);
     }
