@@ -90,4 +90,27 @@ describe('cache.js', function() {
     });
   });
 
+  describe('Overrides', function () {
+    describe('#http.request', function () {
+      it('does not blow up when options is a string', function () {
+        cache.enable();
+        var get = require('http').get;
+        var getRequestWithStringOptions = function () {
+          get('http://example.com');
+        };
+        getRequestWithStringOptions.should.not.throw();
+      });
+    });
+
+    describe('#https.request', function () {
+      it('does not blow up when options is a string', function () {
+        cache.enable();
+        var get = require('https').get;
+        var getRequestWithStringOptions = function () {
+          get('https://example.com');
+        };
+        getRequestWithStringOptions.should.not.throw();
+      });
+    });
+  });
 });

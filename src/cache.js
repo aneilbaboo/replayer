@@ -116,7 +116,12 @@ module.exports.isEnabled = function isEnabled() {
   protocolModule.globalAgent.maxSockets = 1000;
 
   protocolModule.__replayerRequest = protocolModule.request = function replayerRequest(options, callback) {
-    var reqUrl = replayerUtil.urlFromHttpRequestOptions(options, protocol);
+    var reqUrl;
+    if (typeof options === 'string') {
+      reqUrl = options;
+    } else {
+      reqUrl = replayerUtil.urlFromHttpRequestOptions(options, protocol);
+    }
     var reqBody = [];
     var debug = replayerUtil.shouldFindMatchingFixtures();
 
