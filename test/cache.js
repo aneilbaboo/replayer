@@ -88,6 +88,16 @@ describe('cache.js', function() {
         require('https').request.name.should.not.equal('replayerRequest');
       });
     });
-  });
 
+    describe('#http.request override', function () {
+      it('does not blow up when options is a string', function () {
+        cache.enable();
+        var get = require('http').get;
+        var getRequestWithStringOptions = function () {
+          get('http://example.com');
+        };
+        getRequestWithStringOptions.should.not.throw();
+      });
+    });
+  });
 });
