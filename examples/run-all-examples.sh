@@ -86,3 +86,8 @@ start_test 'handle compressed responses'
 rm -r fixtures/
 VCR_MODE=record   node examples/compressed
 VCR_MODE=playback node examples/compressed
+
+start_test 'handle cached image'
+rm -r fixtures/
+VCR_MODE=record   node examples/cacheImage
+VCR_MODE=playback node examples/cacheImage
