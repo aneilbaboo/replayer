@@ -63,7 +63,7 @@ function verify(testFn) {
 }
 
 function shouldEquals(b1, b2) {
-  b1.equals(b2).should.be.true;
+  return b1.equals(b2).should.be.true;
 }
 
 module.exports.shouldEquals = shouldEquals;
