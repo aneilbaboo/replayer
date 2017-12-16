@@ -62,6 +62,11 @@ function verify(testFn) {
   }
 }
 
+function shouldEquals(b1, b2) {
+  return b1.equals(b2).should.be.true;
+}
+
+module.exports.shouldEquals = shouldEquals;
 module.exports.ensureNonCacheMode = ensureNonCacheMode;
 module.exports.shouldBeFast = shouldBeFast;
 module.exports.shouldBeSlow = shouldBeSlow;

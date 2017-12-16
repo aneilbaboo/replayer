@@ -24,9 +24,9 @@
     "Priyanka Salvi, sepia (http://www.linkedin.com/in/coolsmartgalpriyankanew)",
     "Ashima Atul, sepia (https://github.com/ashimaatul)"
   ],
-
   "dependencies": {
-    "levenshtein": "1.0.2"
+    "levenshtein": "1.0.2",
+    "mime-types": "2.1.17"
   },
   "devDependencies": {
     "request": "2.x",
