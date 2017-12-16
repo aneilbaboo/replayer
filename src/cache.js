@@ -18,6 +18,7 @@ var replayerUtil = require('./util');
 var EventEmitter = require('events').EventEmitter;
 var http = require('http');
 var url = require('url');
+var mimeTypes = require('mime-types');
 
 var playbackHits = true;
 var recordMisses = true;
@@ -39,7 +40,7 @@ var requestMethodsToStub = [
   'setTimeout'
 ];
 
-module.exports.configure = function(mode) {
+module.exports.configure = function (mode) {
   switch (mode) {
     case 'record':
       playbackHits = false;
@@ -65,7 +66,7 @@ module.exports.configure = function(mode) {
 * Turns replayer on.
 */
 module.exports.enable = function enable() {
-  ['http', 'https'].forEach(function(protocol) {
+  ['http', 'https'].forEach(function (protocol) {
     var protocolModule = require(protocol);
     if (protocolModule.__replayerRequest) {
       protocolModule.request = protocolModule.__replayerRequest;
@@ -79,7 +80,7 @@ module.exports.enable = function enable() {
 * Turns replayer off.
 */
 module.exports.disable = function disable() {
-  ['http', 'https'].forEach(function(protocol) {
+  ['http', 'https'].forEach(function (protocol) {
     var protocolModule = require(protocol);
     if (protocolModule.__originalRequest) {
       protocolModule.request = protocolModule.__originalRequest;
@@ -108,7 +109,7 @@ module.exports.isEnabled = function isEnabled() {
 };
 
 //
-['http', 'https'].forEach(function(protocol) {
+['http', 'https'].forEach(function (protocol) {
   var protocolModule = require(protocol);
   var oldRequest = protocolModule.request;
   protocolModule.__originalRequest = oldRequest;
@@ -130,16 +131,16 @@ module.exports.isEnabled = function isEnabled() {
 
     var req = stubMethods(new EventEmitter());
 
-    req.write = function(chunk) {
+    req.write = function (chunk) {
       reqBody.push(chunk);
     };
 
-    req.end = function(lastChunk) {
+    req.end = function (lastChunk) {
       if (lastChunk) {
         reqBody.push(lastChunk);
       }
 
-      reqBody = reqBody.map(function(chunk) {
+      reqBody = reqBody.map(function (chunk) {
         if (!Buffer.isBuffer(chunk)) {
           return new Buffer(chunk);
         } else {
@@ -165,9 +166,9 @@ module.exports.isEnabled = function isEnabled() {
         }
 
         var socket = new EventEmitter();
-        socket.setTimeout = socket.setEncoding = function() {};
+        socket.setTimeout = socket.setEncoding = function () { };
         // Needed for node 0.8.x
-        socket.destroy = socket.pause = socket.resume = function() {};
+        socket.destroy = socket.pause = socket.resume = function () { };
 
         req.socket = socket;
         req.emit('socket', socket);
@@ -177,7 +178,7 @@ module.exports.isEnabled = function isEnabled() {
             req.emit('error', resBody.error);
           } else {
             req.emit('error',
-            new Error(`No response headers. Response body: ${JSON.stringify(resBody)}`));
+              new Error(`No response headers. Response body: ${JSON.stringify(resBody)}`));
           }
           return;
         }
@@ -202,7 +203,10 @@ module.exports.isEnabled = function isEnabled() {
         }
 
         if (!forceLive) {
-          resBody = replayerUtil.substituteWithRealValues(fs.readFileSync(filename).toString());
+          var isBinary = !mimeTypes.charset(resHeaders['content-encoding']);
+          resBody = isBinary ? 
+            fs.readFileSync(filename) : 
+            replayerUtil.substituteWithRealValues(fs.readFileSync(filename).toString());
         }
 
         req.emit('response', res);
@@ -285,7 +289,7 @@ module.exports.isEnabled = function isEnabled() {
         });
       }
 
-      var realReq = oldRequest(options, function(res) {
+      var realReq = oldRequest(options, function (res) {
         // It's important that we don't respect the encoding set by
         // application because we want to treat the incoming data as a
         // buffer. When body data is treated as a string, there are issues
@@ -293,23 +297,23 @@ module.exports.isEnabled = function isEnabled() {
         // (in characters) is not necessarily the same as the buffer's length
         // (in bytes). Thus, the solution is to treat the data as a buffer
         // without allowing conversion into a string.
-        res.setEncoding = function() {};
+        res.setEncoding = function () { };
 
         var resBodyChunks = [];
-        res.on('data', function(chunk) {
+        res.on('data', function (chunk) {
           resBodyChunks.push(chunk);
         });
 
-        res.on('end', function() {
+        res.on('end', function () {
           var resBody = Buffer.concat(resBodyChunks);
 
           // uncompress the response body if required
-          switch(res.headers['content-encoding']) {
-          case 'gzip':
-          case 'deflate':
-            resBody = zlib.unzipSync(resBody);
-            delete res.headers['content-encoding'];
-            break;
+          switch (res.headers['content-encoding']) {
+            case 'gzip':
+            case 'deflate':
+              resBody = zlib.unzipSync(resBody);
+              delete res.headers['content-encoding'];
+              break;
           }
 
           if (forceLive) {
@@ -320,8 +324,15 @@ module.exports.isEnabled = function isEnabled() {
               headers: res.headers
             }, resBody);
           } else {
-            fs.writeFileSync(filename,
-              replayerUtil.substituteWithOpaqueKeys(resBody.toString()));
+            var isBinary = !mimeTypes.charset(res.headers['content-encoding']);
+
+            if (isBinary) {
+              fs.writeFileSync(filename, resBody);
+            } else {
+              fs.writeFileSync(filename,
+                replayerUtil.substituteWithOpaqueKeys(resBody.toString())
+              );
+            }
 
             // Store the request, if debug is true
             if (debug) {
@@ -344,7 +355,7 @@ module.exports.isEnabled = function isEnabled() {
         });
       });
 
-      realReq.on('error', function(error) {
+      realReq.on('error', function (error) {
         var header = {
           error: error
         };
@@ -363,9 +374,9 @@ module.exports.isEnabled = function isEnabled() {
         }
       });
 
-      realReq.on('socket', function(socket) {
+      realReq.on('socket', function (socket) {
         var timeoutListener = function () { timedOut = true; };
-        var cleanupSocket = function() {
+        var cleanupSocket = function () {
           socket.removeListener('timeout', timeoutListener);
         };
 
@@ -384,8 +395,8 @@ module.exports.isEnabled = function isEnabled() {
 });
 
 function stubMethods(req) {
-  requestMethodsToStub.forEach(function(method) {
-    req[method] = function() {};
+  requestMethodsToStub.forEach(function (method) {
+    req[method] = function () { };
   });
 
   return req;

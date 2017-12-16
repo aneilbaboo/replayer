@@ -59,16 +59,12 @@ function makeRequest(title, cacheHitExpected, next) {
 
     console.log(title);
     console.log('  status:', data.statusCode);
-    console.log('  receivedImage.length  :', receivedImage.length);
+    console.log('  sent image length:', IMAGE.length);
+    console.log('  received image length  :', receivedImage.length);
     console.log('  time  :', time);
     
     common.verify(function() {
-      
-      if (!IMAGE.equals(receivedImage)) {
-         throw new Error('Expected to receive image ('+IMAGE.length+' bytes), but received ('+receivedImage.length+' bytes)');
-      }
-
-      common.shouldUseCache(cacheHitExpected, time);
+      common.shouldEquals(IMAGE, receivedImage);
     });
 
     console.log();
