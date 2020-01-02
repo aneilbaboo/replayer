@@ -28,13 +28,9 @@ var requestMethodsToStub = [
   'destroy',
   'flush',
   'flushHeaders',
-  'getHeader',
-  'getHeaderNames',
-  'getHeaders',
   'hasHeader',
   'onSocket',
   'removeHeader',
-  'setHeader',
   'setNoDelay',
   'setSocketKeepAlive',
   'setTimeout'
@@ -111,7 +107,7 @@ module.exports.isEnabled = function isEnabled() {
 //
 ['http', 'https'].forEach(function (protocol) {
   var protocolModule = require(protocol);
-  var oldRequest = protocolModule.request;
+	var oldRequest = protocolModule.request;
   protocolModule.__originalRequest = oldRequest;
 
   // Ensure there are enough sockets to handle timeout issues that arise due to
@@ -129,7 +125,26 @@ module.exports.isEnabled = function isEnabled() {
     var reqBody = [];
     var debug = replayerUtil.shouldFindMatchingFixtures();
 
-    var req = stubMethods(new EventEmitter());
+		var req = stubMethods(new EventEmitter());
+
+		req.getHeaders = function getHeaders() {
+			return this.header;
+		};
+
+		req.setHeader = function setHeader(key, val) {
+			if(!this.header) {
+        this.header = {};
+      }
+      this.header[key] = val;
+		};
+
+		req.getHeader = function getHeader(key) {
+			return this.header[key];
+		};
+
+		req.getHeaderName = function getHeaderName() {
+			return Object.keys(this.header);
+		};
 
     req.write = function (chunk) {
       reqBody.push(chunk);
@@ -204,8 +219,8 @@ module.exports.isEnabled = function isEnabled() {
 
         if (!forceLive) {
           var isBinary = !mimeTypes.charset(resHeaders['content-encoding']);
-          resBody = isBinary ? 
-            fs.readFileSync(filename) : 
+          resBody = isBinary ?
+            fs.readFileSync(filename) :
             replayerUtil.substituteWithRealValues(fs.readFileSync(filename).toString());
         }
 
@@ -303,10 +318,8 @@ module.exports.isEnabled = function isEnabled() {
         res.on('data', function (chunk) {
           resBodyChunks.push(chunk);
         });
-
         res.on('end', function () {
           var resBody = Buffer.concat(resBodyChunks);
-
           // uncompress the response body if required
           switch (res.headers['content-encoding']) {
             case 'gzip':
@@ -387,9 +400,15 @@ module.exports.isEnabled = function isEnabled() {
         realReq.on('end', cleanupSocket);
       });
 
+      var that = this;
+      //Add headers to the original request if exist, specifically content-length and content-type for JSON
+			Object.keys(that.header || []).forEach(function(headerKey) {
+				realReq.setHeader(headerKey, that.header[headerKey]);
+				return;
+      });
+      
       realReq.end(reqBody);
     };
-
     return req;
   };
 });
