@@ -33,6 +33,7 @@ function reset() {
 
   globalOptions.filenameFilters = [];
   globalOptions.substitutions = [];
+  globalOptions.urlBlacklist = [];
 
   globalOptions.includeHeaderValues = false;
   globalOptions.includeHeaderNames = true;
@@ -84,6 +85,12 @@ function configure(options) {
         return item.toLowerCase();
       }
     );
+  }
+
+  if (options.urlBlacklist != null) {
+    globalOptions.urlBlacklist = options.urlBlacklist.map(function(urlRegex) {
+      return urlRegex;
+    });
   }
 
   if (options.verbose != null) {
@@ -167,6 +174,12 @@ function filterByWhitelist(list, whitelist) {
 
   return list.filter(function(item) {
     return whitelist.indexOf(item) >= 0;
+  });
+}
+
+function testUrlAgainstRegex(url) {
+  return globalOptions.urlBlacklist.some(function(regex) {
+    return regex.test(url);
   });
 }
 
@@ -472,6 +485,7 @@ module.exports.constructFilename = constructFilename;
 module.exports.urlFromHttpRequestOptions = urlFromHttpRequestOptions;
 module.exports.shouldForceLive = shouldForceLive;
 module.exports.removeInternalHeaders = removeInternalHeaders;
+module.exports.testUrlAgainstRegex = testUrlAgainstRegex;
 module.exports.findTheBestMatchingFixture = findTheBestMatchingFixture;
 module.exports.shouldFindMatchingFixtures = shouldFindMatchingFixtures;
 module.exports.addSubstitution = addSubstitution;

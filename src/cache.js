@@ -126,6 +126,14 @@ module.exports.isEnabled = function isEnabled() {
     } else {
       reqUrl = replayerUtil.urlFromHttpRequestOptions(options, protocol);
     }
+   
+    //Break out of new request module and use original request if
+    //request url matches regex pattern from global urlBlacklist
+    var shouldIgnoreUrl = replayerUtil.testUrlAgainstRegex(reqUrl);
+    if(shouldIgnoreUrl) {
+      return oldRequest(options);
+    }
+    
     var reqBody = [];
     var debug = replayerUtil.shouldFindMatchingFixtures();
 

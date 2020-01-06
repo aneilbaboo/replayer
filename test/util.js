@@ -1033,4 +1033,17 @@ describe('utils.js', function() {
     });
 
   });
+
+  describe('#testAgainstUrlRegex', function() {
+    it('should return true if the routes in test match the regex. False otherwise', function() {
+      replayerUtil.internal.globalOptions.urlBlacklist = [/test/,/boop/];
+      var shouldIgnoreRoute1 = replayerUtil.testUrlAgainstRegex('http://www.test.com/true');
+      var shouldIgnoreRoute2 = replayerUtil.testUrlAgainstRegex('http://www.beep.com/boop');
+      var shouldIgnoreRoute3 = replayerUtil.testUrlAgainstRegex('http://www.foo.com/bar');
+      
+      shouldIgnoreRoute1.should.equal(true);
+      shouldIgnoreRoute2.should.equal(true);
+      shouldIgnoreRoute3.should.equal(false);
+    });
+  });
 });
