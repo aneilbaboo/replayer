@@ -152,7 +152,7 @@ The full list of options are as follows:
 - `verbose`: outputs extra data whenever a fixture is accessed, along with the
   parts used to create the name of the fixture.
 - `touchHits`: disable timestamp update of fixture files on a cache hit.
-- `includeHeaderNames`, `headerWhitelist`, `includeCookieNames`,
+- `includeHeaderNames`, `headerWhitelist`, `urlBlacklist`, `includeCookieNames`,
   `cookieWhitelist`: detailed in a later section.
 - 'debug': Useful for debugging the requests when there is a cache miss. If
    fixtures are recorded with debug mode true, replayer will additionally save all
@@ -268,6 +268,19 @@ Examples of this functionality can be seen in `examples/headers.js`:
 
     rm -r fixtures # in case you had previously generated fixtures
     VCR_MODE=cache node examples/headers
+
+## Ignoring Routes
+
+Some routes you might want Replayer to ignore.  For instance, if you're testing an authentication route that returns a token that expires after 15 minutes, you would not want to cache this response because the token will be invalid.  
+
+To ignore routes, add an option to your configuration like so:
+
+    var replayer = require('replayer');
+    replayer.configure({
+      urlBlacklist: [/myauthurl.com/,/otherroute/]
+    });
+
+The urlBlacklist takes and array of regular expressions to match against.  If a route matches any of these regular expressions, it will by pass the replayer and only use https/http request module.
 
 ## Hiding Sensitive Data
 
