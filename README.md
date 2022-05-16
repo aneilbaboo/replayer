@@ -2,6 +2,9 @@
 
 [![CircleCI](https://circleci.com/gh/aneilbaboo/replayer.svg?style=shield&circle-token=24d0acf1634693970b9b354b4a0d5f206d2992af)](https://circleci.com/gh/aneilbaboo/replayer)
 
+
+I am no longer actively maintaining this project. You may want to try using [Polly.js](https://netflix.github.io/pollyjs/#/ ). 
+
 This project was forked from https://github.com/linkedin/sepia, which [has been
 abandoned](https://github.com/linkedin/sepia/issues/27 ).
 
