@@ -157,7 +157,7 @@ The full list of options are as follows:
 - `touchHits`: disable timestamp update of fixture files on a cache hit.
 - `includeHeaderNames`, `headerWhitelist`, `urlBlacklist`, `includeCookieNames`,
   `cookieWhitelist`: detailed in a later section.
-- 'debug': Useful for debugging the requests when there is a cache miss. If
+- `debug`: Useful for debugging the requests when there is a cache miss. If
    fixtures are recorded with debug mode true, replayer will additionally save all
    the incoming requests  as '.request' files. Furthermore, in case of a cache
    miss, during playback, it will attempt to compare the the missing
